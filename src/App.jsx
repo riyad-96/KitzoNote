@@ -17,7 +17,7 @@ function App() {
       navigate('/auth/log-in', { replace: true });
     }
     if (isLoggedIn) {
-      navigate('/', { replace: true });
+      navigate('/notes', { replace: true });
     }
   }, [isLoggedIn, navigate]);
 

@@ -1,3 +1,13 @@
+export function ZeroSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width={width} height={height}>
+      <rect width="100" height="100" rx="20" fill="#000" />
+      <path d="M30 30 v40" stroke="#fff" strokeWidth="6" strokeLinecap="round" />
+      <path d="M70 30 v40" stroke="#fff" strokeWidth="6" strokeLinecap="round" />
+      <rect className="blinking-rect" x="47" y="33" width="6" height="35" fill="#fff" />
+    </svg>
+  );
+}
 export function LoaderSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} height={height} fill={fill}>
@@ -37,6 +47,27 @@ export function CheckedSvg({ className = '', width = '16', height = '16', fill =
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} height={height} fill={fill}>
       <path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM17.4571 9.45711L16.0429 8.04289L11 13.0858L8.20711 10.2929L6.79289 11.7071L11 15.9142L17.4571 9.45711Z"></path>
+    </svg>
+  );
+}
+export function NoteSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
+      <path d="M288-168v-432q0-30.08 21-51.04T360-672h432q29.7 0 50.85 21.15Q864-629.7 864-600v312L672-96H360q-29.7 0-50.85-21.15Q288-138.3 288-168ZM98-703q-5-29 12.5-54t46.5-30l425-76q29-5 53.5 12.5T665-804l11 60h-73l-9-48-425 76 47 263v228q-16-7-27.5-21.08Q177-260.16 174-278L98-703Zm262 103v432h264v-168h168v-264H360Zm216 216Z" />
+    </svg>
+  );
+}
+export function TrashSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
+      <path d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z" />
+    </svg>
+  );
+}
+export function CloudDoneSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
+      <path d="m429-314 204-204-51-51-153 153-68-68-51 51 119 119ZM240-192q-80 0-136-56T48-384q0-76 52-131.5T227-576q23-85 92.5-138.5T480-768q103 0 179 69.5T744-528q70 0 119 49t49 119q0 70-49 119t-119 49H240Zm0-72h504q40 0 68-28t28-68q0-40-28-68t-68-28h-66l-6-65q-7-74-62-124.5T480-696q-64 0-114.5 38.5T297-556l-14 49-51 3q-48 3-80 37.5T120-384q0 50 35 85t85 35Zm240-216Z" />
     </svg>
   );
 }
