@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 function EachNote({ note, func }) {
   const { id, title, text, createdAt } = note;
-  const { openContextMenu } = func;
+  const { openContextMenu, assignCurrentEditingNote } = func;
   const readableDate = createdAt?.toDate?.() || new Date();
   const relativeTime = formatDistanceToNow(readableDate, { addSuffix: true });
 
@@ -25,6 +25,7 @@ function EachNote({ note, func }) {
       <div className="line-clamp-5 min-h-[50px] leading-snug whitespace-pre-wrap">{text}</div>
 
       <span
+        onClick={() => assignCurrentEditingNote({id, title, text})}
         onContextMenu={(e) => {
           e.preventDefault();
           const minRight = window.innerWidth - e.clientX;

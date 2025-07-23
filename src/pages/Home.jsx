@@ -3,24 +3,32 @@ import { NavLink, Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import { auth } from '../config/firebase';
 import { signOut } from 'firebase/auth';
+import { useState } from 'react';
 
 function Home() {
   async function signout() {
     try {
       await signOut(auth);
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
+  }
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  function openSidebar() {
+    setIsSidebarOpen(true);
   }
 
   return (
     <div className="min-h-screen">
       <div className="mx-auto flex h-screen max-w-[1930px]">
-        <aside className="h-full w-[250px] border-x-1 border-zinc-200 bg-zinc-50">
+        <div onClick={() => setIsSidebarOpen(false)} className={`fixed inset-0 z-9 bg-black/30 transition-opacity duration-400 md:hidden [@media(pointer:fine)]:backdrop-blur-[3px] ${isSidebarOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}></div>
+        <aside className={`h-full w-[250px] border-x-1 border-zinc-200 bg-zinc-50 transition-[translate] duration-400 max-md:fixed max-md:top-0 max-md:left-0 max-md:z-10 ${isSidebarOpen ? 'translate-x-0' : 'max-md:translate-x-[-100%]'}`}>
           <div className="flex items-center justify-between p-3">
             <span className="text-[length:clamp(1.325rem,1.1121rem+0.7921vw,1.825rem)] font-medium">ZeroNote</span>
-            <button className="md:hidden">
-              <ZeroSvg width="30" height="30" />
+            <button onClick={() => setIsSidebarOpen(false)} className="cursor-pointer active:scale-95 md:hidden">
+              <ZeroSvg className="sidebar-svg" width="30" height="30" />
             </button>
           </div>
 
@@ -40,7 +48,7 @@ function Home() {
         </aside>
 
         <main className="flex-1 border-r-1 border-zinc-200 bg-zinc-50">
-          <Header />
+          <Header func={{ openSidebar }} />
           <div className="h-[calc(100%_-_50px)] px-3">
             <Outlet />
           </div>

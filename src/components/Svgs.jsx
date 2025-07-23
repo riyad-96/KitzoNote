@@ -1,10 +1,10 @@
 export function ZeroSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width={width} height={height}>
-      <rect width="100" height="100" rx="20" fill="#000" />
+      <rect data-rect-bg width="100" height="100" rx="20" fill="#000" />
       <path d="M30 30 v40" stroke="#fff" strokeWidth="6" strokeLinecap="round" />
       <path d="M70 30 v40" stroke="#fff" strokeWidth="6" strokeLinecap="round" />
-      <rect className="blinking-rect" x="47" y="33" width="6" height="35" fill="#fff" />
+      <rect data-rect-middle x="47" y="33" width="6" height="35" fill="#fff" />
     </svg>
   );
 }
@@ -73,7 +73,7 @@ export function CloudDoneSvg({ className = '', width = '16', height = '16', fill
 }
 export function MoreHorizontalSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
   return (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg"  viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
       <path d="M263.79-408Q234-408 213-429.21t-21-51Q192-510 213.21-531t51-21Q294-552 315-530.79t21 51Q336-450 314.79-429t-51 21Zm216 0Q450-408 429-429.21t-21-51Q408-510 429.21-531t51-21Q510-552 531-530.79t21 51Q552-450 530.79-429t-51 21Zm216 0Q666-408 645-429.21t-21-51Q624-510 645.21-531t51-21Q726-552 747-530.79t21 51Q768-450 746.79-429t-51 21Z" />
     </svg>
   );
@@ -81,14 +81,14 @@ export function MoreHorizontalSvg({ className = '', width = '16', height = '16',
 export function DeleteForeverSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
-      <path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"/>
+      <path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z" />
     </svg>
   );
 }
 export function RestoreFromTrashSvg({ className = '', width = '16', height = '16', fill = 'currentColor' }) {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width={width} height={height} fill={fill}>
-      <path d="M440-320h80v-166l64 62 56-56-160-160-160 160 56 56 64-62v166ZM280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"/>
+      <path d="M440-320h80v-166l64 62 56-56-160-160-160 160 56 56 64-62v166ZM280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z" />
     </svg>
   );
 }

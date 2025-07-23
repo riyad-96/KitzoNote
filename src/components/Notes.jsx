@@ -28,7 +28,7 @@ function Notes() {
           ...doc.data(),
         });
       });
-      console.log(notesArray);
+
       setNotes(notesArray);
       setNoteIsLoading(false);
     } catch (error) {
@@ -169,8 +169,15 @@ function Notes() {
     }
   }
 
+  //! editing note in editing space
+  const [currentEditingNote, setCurrentEditingNote] = useState(null);
+
+  function assignCurrentEditingNote({ id, title, text }) {
+    setCurrentEditingNote({ id, title, text });
+  }
+
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       {isInteractivityDisabled && <span onContextMenu={(e) => e.preventDefault()} className="fixed inset-0 z-100 cursor-not-allowed"></span>}
       <div className="flex h-[60px] items-center justify-between">
         <h1 className="text-[length:clamp(1.325rem,1.1121rem+0.7921vw,1.825rem)] font-medium">Notes</h1>
@@ -197,7 +204,7 @@ function Notes() {
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2">
             {notes.map((note) => (
-              <EachNote key={note.id} note={note} func={{ openContextMenu }} />
+              <EachNote key={note.id} note={note} func={{ openContextMenu, assignCurrentEditingNote }} />
             ))}
           </div>
         )}
@@ -266,7 +273,7 @@ function Notes() {
             <div onMouseDown={(e) => e.stopPropagation()} className="w-full max-w-[600px] space-y-4 rounded-xl bg-zinc-100 p-5 shadow-xl">
               <div className="grid rounded-lg border border-zinc-200 transition-colors focus-within:border-zinc-300">
                 <input
-                maxLength="100"
+                  maxLength="100"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -326,7 +333,7 @@ function Notes() {
             <div onMouseDown={(e) => e.stopPropagation()} className="w-full max-w-[400px] rounded-2xl bg-white shadow-xl">
               <span className="block border-b-1 border-zinc-200 px-4 py-3 text-lg font-medium">Delete this note !</span>
               <div className="space-y-6 px-4 py-4">
-                <span className="block leading-snug">
+                <span className="block leading-snug text-zinc-700">
                   This action is irrevarsible. '<span className="font-medium break-words">{getCurrentNoteTitle() || 'Untitled'}</span>' will be deleted permanently.
                 </span>
                 <div className="flex justify-end gap-2">
@@ -338,6 +345,38 @@ function Notes() {
                   </button>
                 </div>
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {currentEditingNote && (
+          <motion.div
+            initial={{
+              translateX: '100%',
+            }}
+            animate={{
+              translateX: 0,
+              transition: { duration: 0.3 },
+            }}
+            exit={{
+              translateX: '100%',
+              transition: { duration: 0.3 },
+            }}
+            className="absolute inset-0 top-0 left-0 z-5 grid grid-rows-[auto_1fr] rounded-lg bg-zinc-50"
+          >
+            <div className="">
+              <button onClick={() => setCurrentEditingNote(null)} className="absolute top-4 left-4">
+                back
+              </button>
+              <div></div>
+              <div className="h-[50px]">tool</div>
+            </div>
+
+            <div className="grid grid-rows-[auto_1fr] rounded-lg border-1 border-zinc-300">
+              <input type="text" value={currentEditingNote.title} onChange={(e) => setCurrentEditingNote((prev) => ({ ...prev, title: e.target.value }))} className="px-3 pt-2 text-lg font-medium outline-none" />
+              <textarea value={currentEditingNote.text} onChange={(e) => setCurrentEditingNote((prev) => ({ ...prev, text: e.target.value }))} className="resize-none px-3 pt-1 pb-8 outline-none"></textarea>
             </div>
           </motion.div>
         )}

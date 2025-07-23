@@ -44,3 +44,30 @@ body {
     display: none;
   }
 }
+
+.sidebar-svg {
+  [data-rect-bg] {
+    fill: hsl(0, 0%, 20%);
+    transition: fill 150ms;
+  }
+
+  &:hover [data-rect-bg] {
+    fill: hsl(0, 0%, 25%);
+  }
+}
+
+.sidebar-svg [data-rect-middle] {
+  animation: blinking-rect 3s linear infinite;
+}
+
+@keyframes blinking-rect {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
