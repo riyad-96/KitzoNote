@@ -42,9 +42,12 @@ function Home() {
               <span>Trash</span>
             </NavLink>
           </div>
+
+          <div className="p-2">
           <button onClick={signout} className="cursor-pointer rounded-full bg-zinc-800 px-4 py-1 text-white">
             signout
           </button>
+          </div>
         </aside>
 
         <main className="flex-1 border-r-1 border-zinc-200 bg-zinc-50">

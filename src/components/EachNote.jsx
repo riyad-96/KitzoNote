@@ -1,11 +1,17 @@
 import { motion } from 'motion/react';
-import { formatDistanceToNow } from 'date-fns';
+import { format, isSameYear } from 'date-fns';
 
 function EachNote({ note, func }) {
-  const { id, title, text, createdAt } = note;
+  const { id, title, text, createdAt, updatedAt } = note;
   const { openContextMenu, assignCurrentEditingNote } = func;
-  const readableDate = createdAt?.toDate?.() || new Date();
-  const relativeTime = formatDistanceToNow(readableDate, { addSuffix: true });
+  const times = {
+    creation: createdAt?.toDate?.() || new Date(),
+    updated: updatedAt?.toDate?.() || new Date(),
+  };
+
+  const createdDate = isSameYear(times.creation, new Date()) ? format(times.creation, 'dd MMM') : format(times.creation, 'dd MMM yy');
+  const createdTime = format(times.creation, 'h:mm a');
+  const updatedDate = times.updated;
 
   return (
     <motion.div
@@ -25,7 +31,7 @@ function EachNote({ note, func }) {
       <div className="line-clamp-5 min-h-[50px] leading-snug whitespace-pre-wrap">{text}</div>
 
       <span
-        onClick={() => assignCurrentEditingNote({id, title, text})}
+        onClick={() => assignCurrentEditingNote({ id, title, text, createdDate: `${createdTime}, ${createdDate}`, updatedDate })}
         onContextMenu={(e) => {
           e.preventDefault();
           const minRight = window.innerWidth - e.clientX;
