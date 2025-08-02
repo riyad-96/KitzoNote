@@ -11,16 +11,6 @@ function App() {
   const { isLoggedIn, setIsLoggedIn } = useIsLoggedIn();
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/auth/log-in', { replace: true });
-    }
-    if (isLoggedIn) {
-      navigate('/notes', { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
-
   const { setUser } = useUser();
 
   useEffect(() => {
@@ -38,6 +28,15 @@ function App() {
 
     return () => subscribe();
   }, [setIsLoggedIn, setUser]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/auth/log-in', { replace: true });
+    }
+    if (isLoggedIn) {
+      navigate('/notes', { replace: true });
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div className="bg-zinc-50 font-[Poppins]">
