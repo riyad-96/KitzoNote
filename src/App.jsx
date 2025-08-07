@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase';
+import { useIsLoggedIn, useUser } from './contexts/contexts';
+import { AnimatePresence, motion } from 'motion/react';
 import { LoaderSvg } from './components/Svgs';
-import { useHelper, useIsLoggedIn, useUser } from './contexts/contexts';
 
 function App() {
-  const { isActivityDisabled } = useHelper();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const { isLoggedIn, setIsLoggedIn } = useIsLoggedIn();
+  const { isLoggedIn, setIsLoggedIn, isLoaded, setIsLoaded } = useIsLoggedIn();
 
   const navigate = useNavigate();
   const { setUser } = useUser();
@@ -27,23 +26,39 @@ function App() {
     });
 
     return () => subscribe();
-  }, [setIsLoggedIn, setUser]);
+  }, [setIsLoggedIn, setUser, setIsLoaded, navigate]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoaded) return;
+
+    if (isLoggedIn) {
+      navigate('/home/notes', { replace: true });
+    } else {
       navigate('/auth/log-in', { replace: true });
     }
-    if (isLoggedIn) {
-      navigate('/notes', { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
+  }, [isLoaded, isLoggedIn, navigate]);
 
   return (
-    <div className="bg-zinc-50 font-[Poppins]">
-      {isActivityDisabled && <div className="fixed inset-0 z-[10000] cursor-not-allowed bg-white/30"></div>}
-      <div className={`fixed inset-0 z-[999] grid place-items-center bg-white ${isLoaded && 'site-loaded'}`}>
-        <LoaderSvg className="animate-spin sm:size-[50px]" width="35" height="35" />
-      </div>
+    <div className="overflow-hidden bg-zinc-50 dark:bg-zinc-900 dark:text-white font-[Poppins]">
+      <AnimatePresence mode="wait">
+        {!isLoaded && (
+          <motion.div
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              opacity: { duration: 0.2 },
+            }}
+            className="fixed inset-0 z-[999] grid place-items-center bg-zinc-50 dark:bg-zinc-900 dark:text-white"
+          >
+            <LoaderSvg className="size-[35px] animate-spin md:size-[45px]" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {isLoaded && <Outlet />}
     </div>
   );

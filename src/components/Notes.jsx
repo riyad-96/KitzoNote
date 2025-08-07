@@ -3,7 +3,7 @@ import { useNotes, useUser } from '../contexts/contexts';
 
 import { db } from '../config/firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
-import { LoaderSvg } from './Svgs';
+import { LoaderSvg, AddNoteSvg } from './Svgs';
 import EachNote from './EachNote';
 import { AnimatePresence, motion } from 'motion/react';
 import DeleteModal from './DeleteModal';
@@ -187,15 +187,14 @@ function Notes() {
       {isInteractivityDisabled && <span onContextMenu={(e) => e.preventDefault()} className="fixed inset-0 z-100 cursor-not-allowed"></span>}
       <div className="flex h-[60px] items-center justify-between">
         <h1 className="text-[length:clamp(1.325rem,1.1121rem+0.7921vw,1.825rem)] font-medium">Notes</h1>
-        <div className="flex items-center justify-end gap-2">
-          <button className="h-[30px] cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 text-sm transition-colors hover:bg-zinc-300 active:translate-y-[1px]">New Note</button>
-          <button onClick={() => setNoteModalOpen(true)} className="h-[30px] cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 text-sm transition-colors hover:bg-zinc-300 active:translate-y-[1px]">
-            Quick Note
+        <div className="flex items-center justify-end">
+          <button onClick={() => setNoteModalOpen(true)} className="uni-btn grid size-[30px] items-center justify-center">
+            <AddNoteSvg width="20" height="20" />
           </button>
         </div>
       </div>
 
-      <div className="h-[calc(100vh_-_120px)] overflow-y-auto rounded-lg border border-zinc-200 p-2">
+      <div className="h-[calc(100vh_-_120px)] overflow-y-auto rounded-lg border border-zinc-200 p-2 dark:border-zinc-800">
         {noteIsLoading ? (
           <div className="flex h-[200px] items-center justify-center">
             <LoaderSvg className="animate-spin" width="30" height="30" />
@@ -203,7 +202,7 @@ function Notes() {
         ) : notes.length === 0 ? (
           <div className="grid h-[200px] content-center justify-items-center gap-2">
             <span className="opacity-80">There is no note right now.</span>
-            <button onClick={() => setNoteModalOpen(true)} className="h-[30px] cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 text-sm transition-colors hover:bg-zinc-300 active:translate-y-[1px]">
+            <button onClick={() => setNoteModalOpen(true)} className="uni-btn h-[30px] text-sm">
               Add note !
             </button>
           </div>
@@ -237,13 +236,13 @@ function Notes() {
             onContextMenu={(e) => e.preventDefault()}
             onClick={(e) => e.stopPropagation()}
             style={{ top: contextMenu.y, left: contextMenu.x }}
-            className="fixed top-0 left-0 z-10 rounded-lg bg-white p-1 shadow-md"
+            className="fixed top-0 left-0 z-10 rounded-lg bg-white p-1 shadow-md shadow-zinc-300 dark:bg-zinc-900 dark:shadow-zinc-800"
           >
             <div className="grid overflow-hidden rounded-md whitespace-nowrap">
-              <button onClick={() => console.log(contextMenu.id)} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200">
+              <button onClick={() => console.log(contextMenu.id)} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800">
                 Edit Note
               </button>
-              <button onClick={handleTrash} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200">
+              <button onClick={handleTrash} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800">
                 Move to trash
               </button>
               <button
@@ -251,7 +250,7 @@ function Notes() {
                   setIsDeleteModalShowing(true);
                   setContextMenu({ visible: false });
                 }}
-                className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200"
+                className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 Delete note
               </button>
@@ -274,10 +273,10 @@ function Notes() {
             exit={{
               opacity: 0,
             }}
-            className="fixed inset-0 z-10 flex items-center justify-center bg-black/30 p-4"
+            className="fixed inset-0 z-10 flex items-center justify-center bg-black/30 p-4 dark:bg-white/10"
           >
-            <div onMouseDown={(e) => e.stopPropagation()} className="w-full max-w-[600px] space-y-4 rounded-xl bg-zinc-100 p-5 shadow-xl">
-              <div className="grid rounded-lg border border-zinc-200 transition-colors focus-within:border-zinc-300">
+            <div onMouseDown={(e) => e.stopPropagation()} className="w-full max-w-[600px] space-y-4 rounded-xl bg-zinc-100 p-5 shadow-xl dark:bg-zinc-900">
+              <div className="grid rounded-lg border border-zinc-200 dark:border-zinc-800 transition-colors focus-within:border-zinc-300 dark:focus-within:border-zinc-600">
                 <input
                   maxLength="100"
                   onKeyDown={(e) => {
@@ -308,10 +307,10 @@ function Notes() {
                 ></textarea>
               </div>
               <div className="flex justify-end gap-2">
-                <button onClick={() => setNoteModalOpen(false)} className="h-[30px] cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 text-sm transition-colors hover:bg-zinc-300 active:translate-y-[1px]">
+                <button onClick={() => setNoteModalOpen(false)} className="uni-btn h-[30px]">
                   Cancel
                 </button>
-                <button onClick={handleAddNoteModal} className="h-[30px] cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 text-sm transition-colors hover:bg-zinc-300 active:translate-y-[1px]">
+                <button onClick={handleAddNoteModal} className="uni-btn h-[30px]">
                   Save
                 </button>
               </div>

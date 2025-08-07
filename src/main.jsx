@@ -20,20 +20,6 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: '',
-        element: <Home />,
-        children: [
-          {
-            path: 'notes',
-            element: <Notes />,
-          },
-          {
-            path: 'trash',
-            element: <Trash />,
-          },
-        ],
-      },
-      {
         path: 'auth',
         element: <Auth />,
         children: [
@@ -44,6 +30,20 @@ const router = createBrowserRouter([
           {
             path: 'create-account',
             element: <Signup />,
+          },
+        ],
+      },
+      {
+        path: 'home',
+        element: <Home />,
+        children: [
+          {
+            path: 'notes',
+            element: <Notes />,
+          },
+          {
+            path: 'trash',
+            element: <Trash />,
           },
         ],
       },

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --error-red: #fb2c36;
@@ -74,4 +75,12 @@ body {
 
 button {
   user-select: none;
+}
+
+.uni-btn {
+  @apply cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 transition-colors hover:bg-zinc-300 active:translate-y-[1px] dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-600;
+}
+
+.dark {
+  color-scheme: dark;
 }
