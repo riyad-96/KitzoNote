@@ -43,7 +43,7 @@ function EachTrashNote({ note, func }) {
         }}
         className={`absolute inset-0 z-1 cursor-pointer ${isSelected ? 'bg-black/5 [@media(pointer:fine)]:active:bg-black/10' : '[@media(pointer:fine)]:active:bg-white/30 dark:[@media(pointer:fine)]:active:bg-white/5'}`}
       ></span>
-      <button onClick={() => selectNotes(id)} className={`absolute top-0 left-0 z-2 grid size-[20px] -translate-1/3 cursor-pointer place-items-center transition-opacity duration-150 group-hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
+      <button onClick={() => selectNotes(id)} className={`absolute top-0 left-0 z-2 grid size-[20px] -translate-1/3 cursor-pointer place-items-center transition-opacity duration-150 [@media(pointer:fine)]:group-hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
         <CheckBoxSvg className="relative z-2" width="20" height="20" />
         <span className="absolute inset-1 z-1 rounded-full bg-white dark:bg-black"></span>
       </button>
