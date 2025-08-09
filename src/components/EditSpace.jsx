@@ -175,7 +175,7 @@ function EditSpace() {
         </div>
       </div>
 
-      <div className="grid grid-rows-[auto_1fr] rounded-lg border-1 border-zinc-300 transition-colors dark:border-zinc-800 dark:focus-within:border-zinc-600">
+      <div className="grid grid-rows-[auto_1fr] rounded-lg border-1 border-zinc-200 focus-within:border-zinc-400 transition-colors dark:border-zinc-800 dark:focus-within:border-zinc-600">
         <input placeholder="Title" type="text" value={localTitle} onChange={handleTitleChange} className="w-full px-3 pt-2 text-lg font-medium outline-none" />
         <textarea spellCheck="false" placeholder="Take a note" value={localText} onChange={handleTextChange} className="w-full resize-none px-3 pt-1 pb-8 outline-none"></textarea>
       </div>
