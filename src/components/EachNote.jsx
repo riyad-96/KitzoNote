@@ -38,7 +38,8 @@ function EachNote({ note, func }) {
         onContextMenu={(e) => {
           e.preventDefault();
           const minRight = window.innerWidth - e.clientX;
-          openContextMenu({ clientX: minRight < 145 ? e.clientX - 128 : e.clientX, clientY: e.clientY, id });
+          const minTop = window.innerHeight - e.clientY;
+          openContextMenu({ clientX: minRight < 145 ? e.clientX - 128 : e.clientX, clientY: minTop < 120 ? e.clientY - 116 : e.clientY, id });
         }}
         className="absolute inset-0 z-1 cursor-pointer active:bg-white/30 dark:active:bg-white/1"
       ></span>

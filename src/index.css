@@ -84,3 +84,22 @@ button {
 .dark {
   color-scheme: dark;
 }
+
+.height-dvh {
+  height: 100vh;
+  height: 100dvh;
+}
+.min-height-dvh {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.note-trash-h {
+  height: calc(100vh - 120px);
+  height: calc(100dvh - 120px);
+
+  @media (pointer: coarse) {
+    height: calc(100vh - 125px);
+    height: calc(100dvh - 125px);
+  }
+}

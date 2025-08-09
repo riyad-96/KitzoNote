@@ -8,7 +8,7 @@ import EachNote from './EachNote';
 import { AnimatePresence, motion } from 'motion/react';
 import DeleteModal from './DeleteModal';
 import EditSpace from './EditSpace';
-import { matchPath, matchRoutes, Outlet, useLocation } from 'react-router-dom';
+import { matchPath, matchRoutes, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 function Notes() {
   const { user } = useUser();
@@ -175,8 +175,7 @@ function Notes() {
   }
 
   //! editing note in editing space
-  const location = useLocation();
-  const isNoteRoute = matchPath('/home/notes/:noteId', location.pathname);
+  const navigate = useNavigate();
 
   return (
     <div className="relative overflow-hidden">
@@ -190,7 +189,7 @@ function Notes() {
         </div>
       </div>
 
-      <div className="h-[calc(100vh_-_120px)] overflow-y-auto rounded-lg border border-zinc-200 p-2 transition-[border-color] duration-150 dark:border-zinc-800">
+      <div className="note-trash-h overflow-y-auto rounded-lg border border-zinc-200 p-2 transition-[border-color] duration-150 dark:border-zinc-800">
         {noteIsLoading ? (
           <div className="flex h-[200px] items-center justify-center">
             <LoaderSvg className="animate-spin" width="30" height="30" />
@@ -235,7 +234,13 @@ function Notes() {
             className="fixed top-0 left-0 z-10 rounded-lg bg-white p-1 shadow-md shadow-zinc-300 dark:bg-zinc-900 dark:shadow-zinc-800"
           >
             <div className="grid overflow-hidden rounded-md whitespace-nowrap">
-              <button onClick={() => console.log(contextMenu.id)} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800">
+              <button
+                onClick={() => {
+                  navigate(contextMenu.id);
+                  setContextMenu({ visible: false });
+                }}
+                className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+              >
                 Edit Note
               </button>
               <button onClick={handleTrash} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800">
