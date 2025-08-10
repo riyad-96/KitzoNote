@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useUser } from '../contexts/contexts';
 import { CloseSvg, EditProfileSvg, ProfileSvg } from './Svgs';
 
@@ -41,7 +41,7 @@ export default function Profile({ coords, className, func }) {
       </button>
 
       <div className="space-y-4">
-        <p className="text-center font-light tracking-wide text-sm">{user.email}</p>
+        <p className="text-center text-sm font-light tracking-wide">{user.email}</p>
 
         <div className="grid justify-center">
           <div onClick={() => console.log('lal')} className="group relative size-[70px] cursor-pointer rounded-full">
@@ -53,11 +53,16 @@ export default function Profile({ coords, className, func }) {
           </div>
         </div>
 
-        <h2 className="text-center tracking-wide text-lg font-light md:text-xl">Hi, {profileData.name} !</h2>
+        <h2 className="text-center text-lg font-light tracking-wide md:text-xl">Hi, {profileData.name} !</h2>
 
-        <button onClick={() => {
-          setProfileModalCoord(null)
-        }} className="mx-auto block cursor-pointer rounded-full border border-zinc-500/30 bg-zinc-200 [@media(pointer:fine)]:hover:border-zinc-500 dark:border-zinc-500/40 dark:bg-zinc-700 px-6 py-2 text-sm tracking-wide transition-colors dark:[@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px]">Edit profile</button>
+        <button
+          onClick={() => {
+            setProfileModalCoord(null);
+          }}
+          className="mx-auto block cursor-pointer rounded-full border border-zinc-500/30 bg-zinc-200 px-6 py-2 text-sm tracking-wide transition-colors dark:border-zinc-500/40 dark:bg-zinc-700 [@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px] dark:[@media(pointer:fine)]:hover:border-zinc-500"
+        >
+          Edit profile
+        </button>
       </div>
     </motion.div>
   );
