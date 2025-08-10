@@ -1,3 +1,4 @@
+import { collection } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
 const userContext = createContext();
 
@@ -28,13 +29,17 @@ function UserContextProvider({ children }) {
       if (!localStorage.theme && isDark) {
         document.documentElement.classList.add('dark');
       }
-      if(!localStorage.theme && !isDark) {
+      if (!localStorage.theme && !isDark) {
         document.documentElement.classList.remove('dark');
       }
     });
   }, []);
 
-  return <userContext.Provider value={{ user, setUser, isTouchDevice, isDarkTheme, setIsDarkTheme }}>{children}</userContext.Provider>;
+  //! Profile
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+  const [profileData, setProfileData] = useState({});
+
+  return <userContext.Provider value={{ user, setUser, isTouchDevice, isDarkTheme, setIsDarkTheme, isProfileLoaded, setIsProfileLoaded, profileData, setProfileData }}>{children}</userContext.Provider>;
 }
 
 export default UserContextProvider;

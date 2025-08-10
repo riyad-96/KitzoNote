@@ -2,13 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotes, useUser } from '../contexts/contexts';
 
 import { db } from '../config/firebase';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
 import { LoaderSvg, AddNoteSvg } from './Svgs';
 import EachNote from './EachNote';
 import { AnimatePresence, motion } from 'motion/react';
 import DeleteModal from './DeleteModal';
-import EditSpace from './EditSpace';
-import { matchPath, matchRoutes, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 function Notes() {
   const { user } = useUser();

@@ -1,19 +1,9 @@
 import { NoteSvg, TrashSvg, ZeroSvg } from '../components/Svgs';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import Header from '../components/Header';
-import { auth } from '../config/firebase';
-import { signOut } from 'firebase/auth';
 import { useState } from 'react';
 
 function Home() {
-  async function signout() {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   function openSidebar() {
@@ -22,7 +12,7 @@ function Home() {
 
   return (
     <div className="min-height-dvh">
-      <div className="mx-auto flex height-dvh max-w-[1230px]">
+      <div className="height-dvh mx-auto flex max-w-[1230px]">
         <div onClick={() => setIsSidebarOpen(false)} className={`fixed inset-0 z-9 bg-black/30 transition-opacity duration-400 md:hidden dark:bg-white/10 [@media(pointer:fine)]:backdrop-blur-[3px] ${isSidebarOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}></div>
         <aside className={`h-full w-[250px] border-r-1 border-zinc-200 bg-zinc-50 transition-[translate,background-color,border-color] duration-[400ms,150ms,150ms] max-md:fixed max-md:top-0 max-md:left-0 max-md:z-10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white ${isSidebarOpen ? 'translate-x-0' : 'max-md:translate-x-[-100%]'}`}>
           <div className="flex items-center justify-between p-3">
@@ -44,15 +34,9 @@ function Home() {
               <span>Trash</span>
             </NavLink>
           </div>
-
-          <div className="p-2">
-            <button onClick={signout} className="cursor-pointer rounded-full bg-zinc-800 px-4 py-1 text-white">
-              signout
-            </button>
-          </div>
         </aside>
 
-        <main className="flex-1  border-zinc-200 bg-zinc-50 transition-colors duration-150 dark:border-zinc-800 dark:bg-zinc-900">
+        <main className="flex-1 border-zinc-200 bg-zinc-50 transition-colors duration-150 dark:border-zinc-800 dark:bg-zinc-900">
           <Header func={{ openSidebar }} />
           <div className="h-[calc(100%_-_50px)] px-3">
             <Outlet />

@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { useState } from 'react';
 import { CheckBoxSvg } from './Svgs';
 import { useUser } from '../contexts/UserContextProvider';
 

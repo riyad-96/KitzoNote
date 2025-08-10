@@ -5,16 +5,15 @@ import { doc, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useUser, useNotes } from '../contexts/contexts';
 import { useEffect, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 function EditSpace() {
   const { user } = useUser();
   const { noteId } = useParams();
   const { notes, setNotes } = useNotes();
-  const navigate = useNavigate();
 
   const [currentEditingNote, setCurrentEditingNote] = useState(() => notes.find((note) => note.id === noteId));
-  const { id, title, text, createdAt, updatedAt } = currentEditingNote;
+  const { title, text, createdAt, updatedAt } = currentEditingNote;
 
   const times = {
     created: createdAt?.toDate?.() || new Date(),
@@ -175,7 +174,7 @@ function EditSpace() {
         </div>
       </div>
 
-      <div className="grid grid-rows-[auto_1fr] rounded-lg border-1 border-zinc-200 focus-within:border-zinc-400 transition-colors dark:border-zinc-800 dark:focus-within:border-zinc-600">
+      <div className="grid grid-rows-[auto_1fr] rounded-lg border-1 border-zinc-200 transition-colors focus-within:border-zinc-400 dark:border-zinc-800 dark:focus-within:border-zinc-600">
         <input placeholder="Title" type="text" value={localTitle} onChange={handleTitleChange} className="w-full px-3 pt-2 text-lg font-medium outline-none" />
         <textarea spellCheck="false" placeholder="Take a note" value={localText} onChange={handleTextChange} className="w-full resize-none px-3 pt-1 pb-8 outline-none"></textarea>
       </div>
