@@ -1,18 +1,9 @@
 import { motion } from 'motion/react';
-import { format, isSameYear } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 function EachNote({ note, func }) {
-  const { id, title, text, createdAt, updatedAt } = note;
-  const { openContextMenu, assignCurrentEditingNote } = func;
-  const times = {
-    creation: createdAt?.toDate?.() || new Date(),
-    updated: updatedAt?.toDate?.() || new Date(),
-  };
-
-  const createdDate = isSameYear(times.creation, new Date()) ? format(times.creation, 'dd MMM') : format(times.creation, 'dd MMM yy');
-  const createdTime = format(times.creation, 'h:mm a');
-  const updatedDate = times.updated;
+  const { id, title, text } = note;
+  const { openContextMenu } = func;
 
   const navigate = useNavigate();
 
