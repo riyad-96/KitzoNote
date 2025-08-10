@@ -33,7 +33,7 @@ export default function Profile({ coords, className, func }) {
         top: coords.bottom + 12,
         right: coords.right,
       }}
-      className={`profile-card fixed z-20 w-[300px] rounded-xl border-1 border-zinc-300 bg-zinc-100 py-6 shadow-md transition-[width,color,background-color,border-color] duration-150 md:w-[350px] dark:border-zinc-700 dark:bg-zinc-800 ${className}`}
+      className={`profile-card fixed z-20 w-[300px] rounded-2xl border-1 border-zinc-300 bg-zinc-100 py-6 shadow-md transition-[width,color,background-color,border-color] duration-150 md:w-[350px] dark:border-zinc-700 dark:bg-zinc-800 ${className}`}
     >
       <button onClick={() => setProfileModalCoord(null)} className="absolute top-2 right-2 grid size-[35px] cursor-pointer place-items-center rounded-full [@media(pointer:fine)]:hover:bg-zinc-300 dark:[@media(pointer:fine)]:hover:bg-zinc-700">
         <CloseSvg />
@@ -57,7 +57,7 @@ export default function Profile({ coords, className, func }) {
 
         <button onClick={() => {
           setProfileModalCoord(null)
-        }} className="mx-auto block cursor-pointer rounded-full border border-zinc-500/40 bg-zinc-700 px-6 py-2 text-sm tracking-wide transition-colors [@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px]">Edit profile</button>
+        }} className="mx-auto block cursor-pointer rounded-full border border-zinc-500/30 bg-zinc-200 [@media(pointer:fine)]:hover:border-zinc-500 dark:border-zinc-500/40 dark:bg-zinc-700 px-6 py-2 text-sm tracking-wide transition-colors dark:[@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px]">Edit profile</button>
       </div>
     </motion.div>
   );
