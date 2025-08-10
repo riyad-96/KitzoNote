@@ -121,7 +121,7 @@ function Login() {
             placeholder="Email address"
             autoComplete="username"
           />
-          <span className={`flex items-center gap-2 overflow-hidden text-xs tracking-wide text-red-500 transition-[height] duration-100 select-none ${emailError ? 'h-[20px]' : 'h-0'}`}>
+          <span className={`flex items-center gap-2 overflow-hidden text-xs tracking-wide text-red-500 transition-[height] duration-100 select-none dark:text-red-400 ${emailError ? 'h-[20px]' : 'h-0'}`}>
             <ErrorSvg />
             <span>{emailError}</span>
           </span>
@@ -140,26 +140,26 @@ function Login() {
             placeholder="Password"
             autoComplete="current-password"
           />
-          <span className={`flex items-center gap-2 overflow-hidden text-xs tracking-wide text-red-500 transition-[height] duration-100 select-none ${passError ? 'h-[20px]' : 'h-0'}`}>
+          <span className={`flex items-center gap-2 overflow-hidden text-xs tracking-wide text-red-500 transition-[height] duration-100 select-none dark:text-red-400 ${passError ? 'h-[20px]' : 'h-0'}`}>
             <ErrorSvg />
             <span>{passError}</span>
           </span>
 
-          <button onClick={() => setIsPasswordVisible((prev) => !prev)} className={`absolute top-[1.5rem] right-2 grid size-[35px] translate-y-[-50%] cursor-pointer place-items-center rounded-full text-zinc-500 transition-[opacity_background-color] hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-800 dark:hover:text-zinc-200 ${loginPass.trim() ? '' : 'pointer-events-none opacity-0'}`}>
+          <button onClick={() => setIsPasswordVisible((prev) => !prev)} className={`absolute top-[1.5rem] right-2 grid size-[35px] translate-y-[-50%] cursor-pointer place-items-center rounded-full text-zinc-500 transition-[opacity_background-color] hover:bg-zinc-200 hover:text-zinc-800 dark:hover:bg-zinc-700 dark:hover:text-zinc-200 ${loginPass.trim() ? '' : 'pointer-events-none opacity-0'}`}>
             {isPasswordVisible ? <OpenEyeSvg /> : <CloseEyeSvg />}
             <span className="absolute -inset-2 rounded-full [@media(pointer:fine)]:hidden"></span>
           </button>
         </div>
 
-        <button onClick={handleLoginBtn} className="grid h-[50px] w-full cursor-pointer place-items-center rounded-full bg-zinc-950 dark:bg-zinc-50 text-sm font-medium tracking-wide text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 active:bg-zinc-700 dark:active:bg-zinc-300">
+        <button onClick={handleLoginBtn} className="grid h-[50px] w-full cursor-pointer place-items-center rounded-full bg-zinc-950 text-sm font-medium tracking-wide text-white hover:bg-zinc-800 active:bg-zinc-700 dark:bg-zinc-50 dark:text-black dark:hover:bg-zinc-200 dark:active:bg-zinc-300">
           {tryingToLogin ? <LoaderSvg className="animate-spin" width="24" height="24" /> : <span>Continue</span>}
         </button>
       </form>
-      <span className={`block overflow-hidden text-center text-sm text-red-500 transition-[height_margin-top] duration-100 ${loginError ? 'mt-4 h-[20px]' : 'mt-0 h-0'}`}>{loginError}</span>
+      <span className={`block overflow-hidden text-center text-sm text-red-500 transition-[height_margin-top] duration-100 dark:text-red-400 ${loginError ? 'mt-4 h-[20px]' : 'mt-0 h-0'}`}>{loginError}</span>
 
       <div className="my-7 flex justify-center gap-1 text-center text-sm">
         <span>Don't have an account?</span>
-        <Link to="/auth/create-account" className="text-[#3e68fe] hover:underline">
+        <Link to="/auth/create-account" className="text-[#3e68fe] hover:underline dark:text-[#577cff]">
           Sign up
         </Link>
       </div>

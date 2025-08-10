@@ -4,6 +4,11 @@
 
 :root {
   --error-red: #fb2c36;
+  --error-red-light: #ff6467;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 body {
@@ -26,6 +31,16 @@ body {
 
   + span {
     color: var(--error-red);
+  }
+}
+
+.dark {
+  .error-state {
+    border: 1px solid var(--error-red-light);
+
+    + span {
+      color: var(--error-red-light);
+    }
   }
 }
 
@@ -79,10 +94,6 @@ button {
 
 .uni-btn {
   @apply cursor-pointer rounded-md border-1 border-zinc-300 bg-zinc-200 px-3 transition-colors hover:bg-zinc-300 active:translate-y-[1px] dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-600;
-}
-
-.dark {
-  color-scheme: dark;
 }
 
 .height-dvh {

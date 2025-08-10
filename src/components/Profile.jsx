@@ -1,10 +1,21 @@
 import { motion } from 'motion/react';
 import { useUser } from '../contexts/contexts';
 import { CloseSvg, EditProfileSvg, ProfileSvg } from './Svgs';
+import { signOut } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 export default function Profile({ coords, className, func }) {
   const { user, profileData } = useUser();
   const { setProfileModalCoord } = func;
+
+  //! Sign out
+  async function userSignOut() {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <motion.div
@@ -55,14 +66,25 @@ export default function Profile({ coords, className, func }) {
 
         <h2 className="text-center text-lg font-light tracking-wide md:text-xl">Hi, {profileData.name} !</h2>
 
-        <button
-          onClick={() => {
-            setProfileModalCoord(null);
-          }}
-          className="mx-auto block cursor-pointer rounded-full border border-zinc-500/30 bg-zinc-200 px-6 py-2 text-sm tracking-wide transition-colors dark:border-zinc-500/40 dark:bg-zinc-700 [@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px] dark:[@media(pointer:fine)]:hover:border-zinc-500"
-        >
-          Edit profile
-        </button>
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => {
+              setProfileModalCoord(null);
+            }}
+            className="cursor-pointer rounded-full border border-zinc-500/30 bg-zinc-200 px-4 py-1.5 text-sm font-light tracking-wide transition-colors dark:border-zinc-500/40 dark:bg-zinc-700 [@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px] dark:[@media(pointer:fine)]:hover:border-zinc-500"
+          >
+            Edit profile
+          </button>
+
+          <button
+            onClick={() => {
+              userSignOut();
+            }}
+            className="cursor-pointer rounded-full border border-zinc-500/30 bg-zinc-200 px-4 py-1.5 text-sm font-light tracking-wide transition-colors dark:border-zinc-500/40 dark:bg-zinc-700 [@media(pointer:fine)]:hover:border-zinc-500 [@media(pointer:fine)]:active:translate-y-[1px] dark:[@media(pointer:fine)]:hover:border-zinc-500"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     </motion.div>
   );
