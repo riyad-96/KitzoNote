@@ -81,11 +81,11 @@ function Notes() {
       }
     }
 
-    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('click', handleOutsideClick);
     document.addEventListener('touchstart', handleOutsideClick);
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('click', handleOutsideClick);
       document.removeEventListener('touchstart', handleOutsideClick);
     };
   }, [contextMenu.visible]);

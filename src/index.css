@@ -114,3 +114,13 @@ button {
     height: calc(100dvh - 125px);
   }
 }
+
+button,
+label {
+  user-select: none;
+}
+
+/* 
+@keyframes bounce {
+
+} */

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Profile from './Profile';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import ProfileEditModal from './ProfileEditModal';
 
 function Header({ func }) {
   const { openSidebar } = func;
@@ -18,7 +19,7 @@ function Header({ func }) {
     localStorage.setItem('theme', newTheme === 'dark' ? 'dark' : 'light');
   }
 
-  // profile card coords
+  //! profile card coords
   const profileContainer = useRef(null);
   const [profileModalCoord, setProfileModalCoord] = useState(null);
 
@@ -67,7 +68,6 @@ function Header({ func }) {
   }, [profileModalCoord]);
 
   //! Load profile data
-
   useEffect(() => {
     async function getProfileData() {
       const docRef = doc(db, 'users', user.uid, 'profile', 'info');
@@ -94,6 +94,9 @@ function Header({ func }) {
 
     getProfileData();
   }, [user.uid, setIsProfileLoaded, setProfileData]);
+
+  //! Profile editing
+  const [isProfileEditing, setIsProfileEditing] = useState(false);
 
   return (
     <header className="flex h-[50px] items-center justify-between border-b-1 border-zinc-200 px-3 transition-[border-color] duration-150 dark:border-zinc-800">
@@ -153,12 +156,21 @@ function Header({ func }) {
           </span>
         </button>
 
-        <div ref={profileContainer} onClick={profileModalCoordFunc} className={`profile-container relative size-[30px] cursor-pointer rounded-full outline-2 outline-offset-2 outline-transparent transition-[color,background-color,scale,outline-color] duration-[150ms,150ms,350ms,300ms] [@media(pointer:fine)]:hover:scale-[0.9] [@media(pointer:fine)]:hover:outline-zinc-400`}>
-          <div className="size-full overflow-hidden rounded-full">{profileData?.imgUrl ? <img src={profileData.imgUrl} alt="Profile picture" /> : <ProfileSvg className="size-full fill-zinc-800 transition-colors duration-150 dark:fill-zinc-200" />}</div>
+        <div
+          ref={profileContainer}
+          onClick={(e) => {
+            if (!isProfileLoaded) return;
+            profileModalCoordFunc(e);
+          }}
+          className={`profile-container relative size-[30px] cursor-pointer rounded-full outline-2 outline-offset-2 outline-transparent transition-[color,background-color,scale,outline-color] duration-[150ms,150ms,350ms,300ms] [@media(pointer:fine)]:hover:scale-[0.9] [@media(pointer:fine)]:hover:outline-zinc-400`}
+        >
+          <div className="size-full overflow-hidden rounded-full">{profileData?.imgUrl ? <img className="size-full object-cover object-center" src={profileData.imgUrl} alt="Profile picture" /> : <ProfileSvg className="size-full fill-zinc-800 transition-colors duration-150 dark:fill-zinc-200" />}</div>
         </div>
 
-        <AnimatePresence>{profileModalCoord && <Profile coords={profileModalCoord} func={{ setProfileModalCoord }} />}</AnimatePresence>
+        <AnimatePresence>{profileModalCoord && <Profile coords={profileModalCoord} func={{ setProfileModalCoord, setIsProfileEditing }} />}</AnimatePresence>
       </div>
+
+      <AnimatePresence>{isProfileEditing && <ProfileEditModal func={{ setIsProfileEditing }} />}</AnimatePresence>
     </header>
   );
 }
