@@ -152,6 +152,7 @@ function Notes() {
       selectedNotes.forEach((noteId) => {
         setNotes((prev) => prev.filter((note) => note.id !== noteId));
       });
+      setSelectedNotes([]);
       setIsActivityDisabled(false);
     } catch (error) {
       setIsActivityDisabled(false);
