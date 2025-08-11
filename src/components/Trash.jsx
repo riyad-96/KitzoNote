@@ -7,10 +7,11 @@ import EachTrashNote from './EachTrashNote';
 import { motion, AnimatePresence } from 'motion/react';
 import DeleteModal from './DeleteModal';
 import PreviewModal from './PreviewModal';
+
 function Trash() {
   const { user } = useUser();
   const { trashes, setTrashes } = useNotes();
-  const { setIsActivityDisabled } = useHelper();
+  const { isActivityDisabled, setIsActivityDisabled } = useHelper();
 
   const [isTrashLoading, setIsTrashLoading] = useState(true);
 
@@ -47,10 +48,6 @@ function Trash() {
   function selectNotes(id) {
     setSeletedNotes((prev) => (prev.includes(id) ? prev.filter((noteId) => noteId !== id) : [...prev, id]));
   }
-
-  useEffect(() => {
-    console.log(selectedNotes);
-  }, [selectedNotes]);
 
   //! delete notes
   const [isDeleteModalShowing, setIsDeleteModalShowing] = useState(false);
@@ -106,31 +103,49 @@ function Trash() {
       trashedAt: selectedPreviewNote.trashedAt,
     });
   }
-  useEffect(() => {
-    console.log(previewNote);
-  }, [previewNote]);
 
   return (
     <div>
       <div className="flex h-[60px] items-center justify-between">
         <h1 className="text-[length:clamp(1.325rem,1.1121rem+0.7921vw,1.825rem)] font-medium">Trash</h1>
-        <div className={`flex items-center gap-4 transition-opacity duration-150 ${selectedNotes.length === 0 ? 'pointer-events-none opacity-0' : 'pointer-events-auto opacity-100'}`}>
-          <span>{selectedNotes.length} seleted</span>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setSeletedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 dark:text-zinc-400 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200 active:translate-y-[1px]">
-              <CloseSvg width="20" height="20" />
-            </button>
-            <button onClick={restoreNotes} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 dark:text-zinc-400 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200 active:translate-y-[1px]">
-              <RestoreFromTrashSvg width="24" height="24" />
-            </button>
-            <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 dark:text-zinc-400 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200 active:translate-y-[1px]">
-              <DeleteForeverSvg width="24" height="24" />
-            </button>
-          </div>
-        </div>
+        <AnimatePresence>
+          {selectedNotes.length !== 0 && (
+            <motion.div
+              initial={{
+                y: '-10px',
+                opacity: 0,
+              }}
+              animate={{
+                y: 0,
+                opacity: 1,
+              }}
+              exit={{
+                y: '-10px',
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.1,
+              }}
+              className="flex items-center gap-4 transition-opacity duration-150"
+            >
+              <span>{selectedNotes.length} seleted</span>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setSeletedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                  <CloseSvg width="20" height="20" />
+                </button>
+                <button onClick={restoreNotes} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                  <RestoreFromTrashSvg width="24" height="24" />
+                </button>
+                <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                  <DeleteForeverSvg width="24" height="24" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="note-trash-h overflow-y-auto rounded-lg border border-zinc-200 dark:border-zinc-800 transition-colors duration- p-2">
+      <div className="note-trash-h duration- overflow-y-auto rounded-lg border border-zinc-200 p-3 transition-colors dark:border-zinc-800">
         {isTrashLoading ? (
           <div className="flex h-[200px] items-center justify-center">
             <LoaderSvg className="animate-spin" width="30" height="30" />

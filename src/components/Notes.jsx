@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNotes, useUser } from '../contexts/contexts';
+import { useHelper, useNotes, useUser } from '../contexts/contexts';
 
 import { db } from '../config/firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
-import { LoaderSvg, AddNoteSvg } from './Svgs';
+import { LoaderSvg, AddNoteSvg, CloseSvg, RestoreFromTrashSvg, DeleteForeverSvg, TrashSvg } from './Svgs';
 import EachNote from './EachNote';
 import { AnimatePresence, motion } from 'motion/react';
 import DeleteModal from './DeleteModal';
@@ -13,6 +13,7 @@ function Notes() {
   const { user } = useUser();
   const { notes, setNotes } = useNotes();
   const [noteIsLoading, setNoteIsLoading] = useState(true);
+  const { setIsActivityDisabled } = useHelper();
 
   //! FetchNotes
   const fetchUserNotes = useCallback(async () => {
@@ -33,7 +34,6 @@ function Notes() {
 
       setNotes(notesArray);
       setNoteIsLoading(false);
-      console.log('fetched');
     } catch (error) {
       console.error(error);
     }
@@ -47,50 +47,10 @@ function Notes() {
 
   //! Modal and custom context menu
   const [noteModalOpen, setNoteModalOpen] = useState(false);
-  const [contextMenu, setContextMenu] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    id: '',
-  });
-
-  const [currentNote, setCurrentNote] = useState('');
-  function getCurrentNoteTitle() {
-    const note = notes.find((savedNote) => savedNote.id === currentNote);
-    return note.title;
-  }
-
-  function openContextMenu({ clientX, clientY, id }) {
-    console.log(clientX, clientY, id);
-    setContextMenu({ visible: false });
-    setTimeout(() => {
-      setContextMenu({
-        visible: true,
-        x: clientX,
-        y: clientY,
-        id,
-      });
-    }, 50);
-    setCurrentNote(id);
-  }
-
-  useEffect(() => {
-    function handleOutsideClick() {
-      if (contextMenu.visible) {
-        setContextMenu((prev) => ({ ...prev, visible: false }));
-      }
-    }
-
-    document.addEventListener('click', handleOutsideClick);
-    document.addEventListener('touchstart', handleOutsideClick);
-
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-      document.removeEventListener('touchstart', handleOutsideClick);
-    };
-  }, [contextMenu.visible]);
 
   //! add notes
+  const [isInteractivityDisabled, setIsInteractivityDisabled] = useState(false);
+
   const quickNoteTitleRef = useRef(null);
   const quickNoteBodyRef = useRef(null);
 
@@ -135,65 +95,140 @@ function Notes() {
     }
   }
 
-  //! Add to trash
-  const [isInteractivityDisabled, setIsInteractivityDisabled] = useState(false);
+  //! Note selection
+  const [selectedNotes, setSelectedNotes] = useState([]);
 
-  async function handleTrash() {
-    setIsInteractivityDisabled(true);
-    const noteDocRef = doc(db, 'users', user.uid, 'notes', contextMenu.id);
-    const trashDocRef = doc(db, 'users', user.uid, 'trash', contextMenu.id);
-
-    try {
-      setContextMenu((prev) => ({ ...prev, visible: false, id: '' }));
-      const selectedNote = await getDoc(noteDocRef);
-      const localObj = {
-        ...selectedNote.data(),
-        trashedAt: serverTimestamp(),
-      };
-
-      await setDoc(trashDocRef, localObj);
-      await deleteDoc(noteDocRef);
-      fetchUserNotes();
-      setIsInteractivityDisabled(false);
-    } catch (error) {
-      console.error(error);
-      setIsInteractivityDisabled(false);
-    }
+  function selectNotes(id) {
+    setSelectedNotes((prev) => (prev.includes(id) ? prev.filter((noteId) => noteId !== id) : [...prev, id]));
   }
 
   //! Note delete program
   const [isDeleteModalShowing, setIsDeleteModalShowing] = useState(false);
 
   async function deleteNotes() {
-    setIsInteractivityDisabled(true);
-    const noteRef = doc(db, 'users', user.uid, 'notes', currentNote);
+    setIsActivityDisabled(true);
+    const deletePromises = selectedNotes.map((noteId) => deleteDoc(doc(db, 'users', user.uid, 'notes', noteId)));
+
     try {
-      await deleteDoc(noteRef);
-      fetchUserNotes();
+      await Promise.all(deletePromises);
+      selectedNotes.forEach((noteId) => {
+        setNotes((prev) => prev.filter((note) => note.id !== noteId));
+      });
       setIsDeleteModalShowing(false);
-      setIsInteractivityDisabled(false);
+      setSelectedNotes([]);
+      setIsActivityDisabled(false);
     } catch (error) {
+      setIsActivityDisabled(false);
       console.error(error);
-      setIsInteractivityDisabled(false);
     }
   }
 
-  //! editing note in editing space
-  const navigate = useNavigate();
+  //! Note Trash program
+  async function handleTrash() {
+    setIsActivityDisabled(true);
+
+    const trashingPromises = selectedNotes.map((noteId) => {
+      const docRef = doc(db, 'users', user.uid, 'trash', noteId);
+      const trashingNote = notes.find((note) => note.id === noteId);
+      const { createdAt, updatedAt, title, text } = trashingNote;
+
+      return setDoc(docRef, {
+        createdAt,
+        updatedAt,
+        title,
+        text,
+        trashedAt: serverTimestamp(),
+      });
+    });
+
+    const deletePromises = selectedNotes.map((noteId) => {
+      const docRef = doc(db, 'users', user.uid, 'notes', noteId);
+      return deleteDoc(docRef);
+    });
+
+    try {
+      await Promise.all([...trashingPromises, ...deletePromises]);
+
+      selectedNotes.forEach((noteId) => {
+        setNotes((prev) => prev.filter((note) => note.id !== noteId));
+      });
+      setIsActivityDisabled(false);
+    } catch (error) {
+      setIsActivityDisabled(false);
+      console.error(error);
+    }
+  }
 
   return (
     <div className="relative overflow-hidden">
       {isInteractivityDisabled && <span onContextMenu={(e) => e.preventDefault()} className="fixed inset-0 z-100 cursor-not-allowed"></span>}
       <div className="flex h-[60px] items-center justify-between">
         <h1 className="text-[length:clamp(1.325rem,1.1121rem+0.7921vw,1.825rem)] font-medium">Notes</h1>
-        <div className="flex items-center justify-end">
-          <button onClick={() => setNoteModalOpen(true)} className="uni-btn grid size-[30px] items-center justify-center">
-            <AddNoteSvg width="20" height="20" />
-          </button>
+        <div className="relative flex items-center justify-end">
+          <AnimatePresence>
+            {selectedNotes.length > 0 && (
+              <motion.div
+                initial={{
+                  y: '-10px',
+                  opacity: 0,
+                }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  y: '-10px',
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.2,
+                }}
+                className="flex items-center gap-4"
+              >
+                <span>{selectedNotes.length} seleted</span>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setSelectedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                    <CloseSvg width="20" height="20" />
+                  </button>
+                  <button onClick={handleTrash} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                    <TrashSvg width="26" height="26" />
+                  </button>
+                  <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                    <DeleteForeverSvg width="24" height="24" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {selectedNotes.length === 0 && (
+              <motion.button
+                initial={{
+                  y: '10px',
+                  opacity: 0,
+                }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  y: '10px',
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.2,
+                }}
+                onClick={() => setNoteModalOpen(true)}
+                className="uni-btn absolute grid size-[30px] items-center justify-center"
+              >
+                <AddNoteSvg width="20" height="20" />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      <div className="note-trash-h overflow-y-auto rounded-lg border border-zinc-200 p-2 transition-[border-color] duration-150 dark:border-zinc-800">
+      <div className="note-trash-h overflow-y-auto rounded-lg border border-zinc-200 p-3 transition-[border-color] duration-150 dark:border-zinc-800">
         {noteIsLoading ? (
           <div className="flex h-[200px] items-center justify-center">
             <LoaderSvg className="animate-spin" width="30" height="30" />
@@ -208,61 +243,11 @@ function Notes() {
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-3">
             {notes.map((note) => (
-              <EachNote key={note.id} note={note} func={{ openContextMenu }} />
+              <EachNote key={note.id} state={{ note, selectedNotes }} func={{ selectNotes }} />
             ))}
           </div>
         )}
       </div>
-
-      <AnimatePresence>
-        {contextMenu.visible && (
-          <motion.div
-            initial={{
-              opacity: 0,
-              scale: 0.9,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              duration: 0.05,
-            }}
-            exit={{
-              scale: 0.9,
-              opacity: 0,
-            }}
-            onContextMenu={(e) => e.preventDefault()}
-            onClick={(e) => e.stopPropagation()}
-            style={{ top: contextMenu.y, left: contextMenu.x }}
-            className="fixed top-0 left-0 z-10 rounded-lg bg-white p-1 shadow-md shadow-zinc-300 dark:bg-zinc-900 dark:shadow-zinc-800"
-          >
-            <div className="grid overflow-hidden rounded-md whitespace-nowrap">
-              <button
-                onClick={() => {
-                  navigate(contextMenu.id);
-                  setContextMenu({ visible: false });
-                }}
-                className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800"
-              >
-                Edit Note
-              </button>
-              <button onClick={handleTrash} className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800">
-                Move to trash
-              </button>
-              <button
-                onClick={() => {
-                  setIsDeleteModalShowing(true);
-                  setContextMenu({ visible: false });
-                }}
-                className="flex cursor-pointer bg-zinc-50 px-3 py-2 text-sm transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800"
-              >
-                Delete note
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {noteModalOpen && (
@@ -325,18 +310,7 @@ function Notes() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isDeleteModalShowing && (
-          <DeleteModal
-            texts={
-              <span>
-                <span className="font-medium">'{getCurrentNoteTitle()}'</span> will be deleted permanently.
-              </span>
-            }
-            func={{ deleteNotes, setIsDeleteModalShowing }}
-          />
-        )}
-      </AnimatePresence>
+      <AnimatePresence>{isDeleteModalShowing && <DeleteModal func={{ deleteNotes, setIsDeleteModalShowing }} texts={`${selectedNotes.length} selected note${selectedNotes.length < 2 ? '' : 's'} will be deleted permanently.`} />}</AnimatePresence>
 
       <Outlet />
     </div>

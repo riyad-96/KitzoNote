@@ -76,7 +76,7 @@ export default function Profile({ coords, className, func }) {
           </div>
         </div>
 
-        <h2 className="text-center text-lg font-light tracking-wide transition-[font-size] duration-150 md:text-xl">Hi, {profileData.name} !</h2>
+        <h2 className="text-center text-lg font-light  transition-[font-size] duration-150 md:text-xl">Hi, {profileData.name} !</h2>
 
         <div className="grid grid-cols-2 gap-3">
           <button

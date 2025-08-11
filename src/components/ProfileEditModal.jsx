@@ -1,8 +1,8 @@
-import { motion } from 'motion/react';
-import { ChangeFileSvg, CloseSvg, CloudUploadSvg, PencilSvg, ProfileSvg, TrashSvg } from './Svgs';
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ChangeFileSvg, CloseSvg, CloudUploadSvg, LoaderSvg, PencilSvg, ProfileSvg, TrashSvg } from './Svgs';
+import { useEffect, useRef, useState } from 'react';
 import { useUser } from '../contexts/contexts';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export default function ProfileEditModal({ func }) {
@@ -12,16 +12,15 @@ export default function ProfileEditModal({ func }) {
 
   useEffect(() => {
     setName(profileData.name);
-  }, [profileData.name]);
+  }, []);
 
-  //! Profile change
+  //! Profile picture change
   const [newImgUrl, setNewImgUrl] = useState('');
   const [isLimitExceeded, setIsLimitExceeded] = useState(false);
 
   function readSetNewImg(e) {
     const file = e.target.files[0];
     const size = Math.floor(file.size / 1024);
-    console.log(size);
     if (size > 650) {
       setIsLimitExceeded(true);
       e.target.value = '';
@@ -36,7 +35,7 @@ export default function ProfileEditModal({ func }) {
     reader.readAsDataURL(file);
   }
 
-  //! Saved Profile data
+  //! Save Profile data
   const [isSaving, setIsSaving] = useState(false);
 
   async function saveNewProfilePhoto() {
@@ -58,6 +57,35 @@ export default function ProfileEditModal({ func }) {
     }
   }
 
+  //! Update name
+  const [isNameUpdating, setIsNameUpdating] = useState(false);
+  const nameDebounce = useRef(null);
+
+  function handleNameInput(e) {
+    const inputValue = e.target.value;
+    setName(inputValue);
+    debounceNameUpdate(inputValue.trim());
+  }
+
+  async function debounceNameUpdate(newName) {
+    setIsNameUpdating(true);
+    clearTimeout(nameDebounce.current);
+    const docRef = doc(db, 'users', user.uid, 'profile', 'info');
+
+    nameDebounce.current = setTimeout(async () => {
+      try {
+        await updateDoc(docRef, {
+          ...profileData,
+          name: newName,
+        });
+        setProfileData((prev) => ({ ...prev, name: newName }));
+      } catch (error) {
+        console.error(error);
+      }
+      setIsNameUpdating(false);
+    }, 500);
+  }
+
   return (
     <motion.div
       initial={{
@@ -70,12 +98,23 @@ export default function ProfileEditModal({ func }) {
         opacity: 0,
       }}
       transition={{ duration: 0.2 }}
-      onMouseDown={() => setIsProfileEditing(false)}
+      onMouseDown={() => {
+        if (!isNameUpdating) {
+          setIsProfileEditing(false);
+        }
+      }}
       className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/30 px-4 py-8 dark:bg-white/10 [@media(pointer:fine)]:backdrop-blur-[3px]"
     >
       {isSaving && <div onMouseDown={(e) => e.stopPropagation()} className="absolute inset-0 z-[1000]"></div>}
       <div onMouseDown={(e) => e.stopPropagation()} className="relative w-full max-w-[350px] space-y-4 rounded-2xl bg-zinc-50 p-6 shadow-lg transition-[max-width] duration-200 md:max-w-[400px] dark:bg-zinc-900">
-        <button onClick={() => setIsProfileEditing(false)} className="absolute top-2 right-2 grid size-[36px] cursor-pointer place-items-center rounded-full [@media(pointer:fine)]:hover:bg-zinc-300 dark:[@media(pointer:fine)]:hover:bg-zinc-700">
+        <button
+          onMouseDown={() => {
+            if (!isNameUpdating) {
+              setIsProfileEditing(false);
+            }
+          }}
+          className="absolute top-2 right-2 grid size-[36px] cursor-pointer place-items-center rounded-full [@media(pointer:fine)]:hover:bg-zinc-300 dark:[@media(pointer:fine)]:hover:bg-zinc-700"
+        >
           <CloseSvg width="20" height="20" />
           <span className="absolute -inset-1 z-5 [@media(pointer:fine)]:hidden"></span>
         </button>
@@ -86,16 +125,18 @@ export default function ProfileEditModal({ func }) {
           <label htmlFor="profile-name-input" className="block w-fit select-none">
             Profile name
           </label>
-          <div className="relative">
-            <input
-              id="profile-name-input"
-              type="text"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-              className="w-full rounded-full border border-zinc-300 px-4 py-2 text-base transition-colors outline-none focus:border-zinc-500 dark:border-zinc-700"
-            />
+
+          <div className="flex rounded-full border border-zinc-300 transition-colors duration-150 focus-within:border-zinc-500 dark:border-zinc-700">
+            <div className="flex-1">
+              <input id="profile-name-input" type="text" value={name} onChange={handleNameInput} maxLength="40" className="w-full px-4 py-2 outline-none" autoComplete="off" />
+            </div>
+            <AnimatePresence>
+              {isNameUpdating && (
+                <div className="pointer-events-none grid place-items-center pr-2 text-zinc-600 dark:text-zinc-400">
+                  <LoaderSvg width="30" height="30" className="animate-spin" />
+                </div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 

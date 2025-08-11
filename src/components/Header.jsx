@@ -29,7 +29,6 @@ function Header({ func }) {
       return;
     }
     const { right, bottom } = e.target.getBoundingClientRect();
-    console.log(right, bottom);
     setProfileModalCoord({
       right: window.innerWidth - right - 1,
       bottom: bottom + 2,

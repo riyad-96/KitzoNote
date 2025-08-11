@@ -92,7 +92,7 @@ function Login() {
     try {
       await signInWithEmailAndPassword(auth, loginEmail, loginPass);
     } catch (error) {
-      console.log(error.code);
+      console.error(error.code);
       if (error.code === 'auth/too-many-requests') {
         setLoginError('Too many attempts. Try again later.');
       } else {

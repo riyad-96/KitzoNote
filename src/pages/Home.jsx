@@ -2,9 +2,11 @@ import { NoteSvg, TrashSvg, ZeroSvg } from '../components/Svgs';
 import { NavLink, Outlet } from 'react-router-dom';
 import Header from '../components/Header';
 import { useState } from 'react';
+import { useHelper } from '../contexts/contexts';
 
 function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { isActivityDisabled } = useHelper();
 
   function openSidebar() {
     setIsSidebarOpen(true);
@@ -12,6 +14,7 @@ function Home() {
 
   return (
     <div className="min-height-dvh">
+      {isActivityDisabled && <div className="fixed inset-0 z-[1000] cursor-not-allowed bg-white/30 dark:bg-white/10"></div>}
       <div className="height-dvh mx-auto flex max-w-[1230px]">
         <div onClick={() => setIsSidebarOpen(false)} className={`fixed inset-0 z-9 bg-black/30 transition-opacity duration-400 md:hidden dark:bg-white/10 [@media(pointer:fine)]:backdrop-blur-[3px] ${isSidebarOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}></div>
         <aside className={`h-full w-[250px] border-r-1 border-zinc-200 bg-zinc-50 transition-[translate,background-color,border-color] duration-[400ms,150ms,150ms] max-md:fixed max-md:top-0 max-md:left-0 max-md:z-10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white ${isSidebarOpen ? 'translate-x-0' : 'max-md:translate-x-[-100%]'}`}>

@@ -28,7 +28,6 @@ function EditSpace() {
   useEffect(() => {
     const updateInterval = setInterval(async () => {
       setTick((prev) => prev + 1);
-      console.log(tick);
     }, 3000);
 
     return () => clearInterval(updateInterval);
