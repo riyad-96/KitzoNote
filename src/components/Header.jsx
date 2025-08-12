@@ -163,7 +163,10 @@ function Header({ func }) {
           }}
           className={`profile-container relative size-[30px] cursor-pointer rounded-full outline-2 outline-offset-2 outline-transparent transition-[color,background-color,scale,outline-color] duration-[150ms,150ms,350ms,300ms] [@media(pointer:fine)]:hover:scale-[0.9] [@media(pointer:fine)]:hover:outline-zinc-400`}
         >
-          <div className="size-full overflow-hidden rounded-full">{profileData?.imgUrl ? <img className="size-full object-cover object-center" src={profileData.imgUrl} alt="Profile picture" /> : <ProfileSvg className="size-full fill-zinc-800 transition-colors duration-150 dark:fill-zinc-200" />}</div>
+          <div className="relative size-full overflow-hidden rounded-full">
+            {profileData?.imgUrl ? <img className="size-full object-cover object-center" src={profileData.imgUrl} alt="Profile picture" /> : <ProfileSvg className="size-full fill-zinc-800 transition-colors duration-150 dark:fill-zinc-200" />}
+            {!isProfileLoaded && <span className="absolute inset-0 bg-zinc-400 animate-ping"></span>}
+          </div>
         </div>
 
         <AnimatePresence>{profileModalCoord && <Profile coords={profileModalCoord} func={{ setProfileModalCoord, setIsProfileEditing }} />}</AnimatePresence>
