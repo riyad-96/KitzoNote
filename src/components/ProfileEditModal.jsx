@@ -86,6 +86,25 @@ export default function ProfileEditModal({ func }) {
     }, 500);
   }
 
+  //! Profile photo delete
+  const [wantToDelete, setWantToDelete] = useState(false);
+  const [isPhotoDeleting, setIsPhotoDeleting] = useState(false);
+
+  async function removeProfilePicture() {
+    setIsPhotoDeleting(true);
+    const docRef = doc(db, 'users', user.uid, 'profile', 'info');
+
+    try {
+      await updateDoc(docRef, { ...profileData, imgUrl: '' });
+      setProfileData((prev) => ({ ...prev, imgUrl: '' }));
+      setIsPhotoDeleting(false);
+      setWantToDelete(false);
+    } catch (error) {
+      setIsPhotoDeleting(false);
+      console.error(error);
+    }
+  }
+
   return (
     <motion.div
       initial={{
@@ -105,8 +124,8 @@ export default function ProfileEditModal({ func }) {
       }}
       className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/30 px-4 py-8 dark:bg-white/10 [@media(pointer:fine)]:backdrop-blur-[3px]"
     >
-      {isSaving && <div onMouseDown={(e) => e.stopPropagation()} className="absolute inset-0 z-[1000]"></div>}
-      <div onMouseDown={(e) => e.stopPropagation()} className="relative w-full max-w-[350px] space-y-4 rounded-2xl bg-zinc-50 p-6 shadow-lg transition-[max-width] duration-200 md:max-w-[400px] dark:bg-zinc-900">
+      {isSaving || (isPhotoDeleting && <div onMouseDown={(e) => e.stopPropagation()} className="absolute inset-0 z-[1000]"></div>)}
+      <div onMouseDown={(e) => e.stopPropagation()} className="relative w-full max-w-[350px] overflow-hidden rounded-2xl bg-zinc-50 p-6 shadow-lg transition-[max-width] duration-200 md:max-w-[400px] dark:bg-zinc-900">
         <button
           onMouseDown={() => {
             if (!isNameUpdating) {
@@ -119,7 +138,7 @@ export default function ProfileEditModal({ func }) {
           <span className="absolute -inset-1 z-5 [@media(pointer:fine)]:hidden"></span>
         </button>
 
-        <p className="text-xl font-medium">Profile</p>
+        <p className="mb-4 text-xl font-medium">Profile</p>
 
         <div className="space-y-2">
           <label htmlFor="profile-name-input" className="block w-fit select-none">
@@ -201,7 +220,9 @@ export default function ProfileEditModal({ func }) {
                   setNewImgUrl('');
                   return;
                 }
-                console.log('remove old photo');
+                if (profileData.imgUrl) {
+                  setWantToDelete(true);
+                }
               }}
               className="grid h-[40px] cursor-pointer place-items-center gap-2 rounded-full border border-zinc-300 bg-zinc-200 text-sm font-light tracking-wide shadow-black/40 transition-[color,background-color,border-color,box-shadow] dark:border-zinc-700 dark:bg-zinc-800 [@media(pointer:fine)]:hover:bg-zinc-300 [@media(pointer:fine)]:hover:shadow dark:[@media(pointer:fine)]:hover:bg-zinc-700"
             >
@@ -216,6 +237,71 @@ export default function ProfileEditModal({ func }) {
             </button>
           </div>
         </div>
+
+        <AnimatePresence>
+          {wantToDelete && (
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                opacity: { duration: 0.2 },
+              }}
+              onClick={() => setWantToDelete(false)}
+              className="absolute inset-0 overflow-hidden bg-black/20 dark:bg-white/5"
+            >
+              <motion.div
+                initial={{
+                  y: '100%',
+                }}
+                animate={{
+                  y: 0,
+                }}
+                exit={{
+                  y: '100%',
+                }}
+                transition={{
+                  y: { duration: 0.2 },
+                }}
+                onClick={(e) => e.stopPropagation()}
+                className="absolute bottom-0 left-0 grid w-full p-3"
+              >
+                <div className="space-y-4 rounded-2xl bg-zinc-50 p-6 dark:bg-zinc-900">
+                  <p className="text-center">Remove profile photo?</p>
+
+                  <div className="relative mx-auto size-[150px] overflow-hidden rounded-full">
+                    <img className="size-full object-cover object-center select-none" src={profileData.imgUrl} alt="Profile picture" />
+                    {isPhotoDeleting && (
+                      <div className="absolute inset-0 z-5 rounded-full bg-white/40">
+                        <div className="flex size-full items-center justify-center gap-1">
+                          <div className="size-2 animate-[ping_1200ms_infinite] rounded-full bg-white"></div>
+                          <div className="size-2 animate-[ping_1200ms_100ms_infinite] rounded-full bg-white"></div>
+                          <div className="size-2 animate-[ping_1200ms_200ms_infinite] rounded-full bg-white"></div>
+                          <div className="size-2 animate-[ping_1200ms_300ms_infinite] rounded-full bg-white"></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button onClick={() => setWantToDelete(false)} className="h-[40px] cursor-pointer rounded-full border border-zinc-300 bg-zinc-200 text-sm font-light tracking-wide shadow-black/40 transition-[color,background-color,border-color,box-shadow] dark:border-zinc-700 dark:bg-zinc-800 [@media(pointer:fine)]:hover:bg-zinc-300 [@media(pointer:fine)]:hover:shadow dark:[@media(pointer:fine)]:hover:bg-zinc-700">
+                      Cancel
+                    </button>
+                    <button onClick={removeProfilePicture} className="h-[40px] cursor-pointer rounded-full border border-zinc-300 bg-zinc-200 text-sm font-light tracking-wide shadow-black/40 transition-[color,background-color,border-color,box-shadow] dark:border-zinc-700 dark:bg-zinc-800 [@media(pointer:fine)]:hover:bg-zinc-300 [@media(pointer:fine)]:hover:shadow dark:[@media(pointer:fine)]:hover:bg-zinc-700">
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

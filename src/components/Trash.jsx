@@ -130,13 +130,13 @@ function Trash() {
             >
               <span>{selectedNotes.length} seleted</span>
               <div className="flex items-center gap-2">
-                <button onClick={() => setSeletedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                <button onClick={() => setSeletedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
                   <CloseSvg width="20" height="20" />
                 </button>
-                <button onClick={restoreNotes} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                <button onClick={restoreNotes} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
                   <RestoreFromTrashSvg width="24" height="24" />
                 </button>
-                <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
                   <DeleteForeverSvg width="24" height="24" />
                 </button>
               </div>

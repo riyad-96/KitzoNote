@@ -116,6 +116,7 @@ button {
 }
 
 button,
-label {
+label,
+img {
   user-select: none;
 }
