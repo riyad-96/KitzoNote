@@ -164,7 +164,7 @@ export default function ProfileEditModal({ func }) {
 
           <div className="relative mx-auto size-[220px] rounded-full transition-[width,height] duration-200 md:size-[250px]">
             {isSaving && (
-              <div className="absolute inset-0 z-5 rounded-full bg-white/40">
+              <div className="absolute inset-0 z-5 rounded-full bg-[hsl(0,0%,50%,0.3)]">
                 <div className="flex size-full items-center justify-center gap-1">
                   <div className="size-2 animate-[ping_1200ms_infinite] rounded-full bg-white"></div>
                   <div className="size-2 animate-[ping_1200ms_100ms_infinite] rounded-full bg-white"></div>
@@ -278,7 +278,7 @@ export default function ProfileEditModal({ func }) {
                   <div className="relative mx-auto size-[150px] overflow-hidden rounded-full">
                     <img className="size-full object-cover object-center select-none" src={profileData.imgUrl} alt="Profile picture" />
                     {isPhotoDeleting && (
-                      <div className="absolute inset-0 z-5 rounded-full bg-white/40">
+                      <div className="absolute inset-0 z-5 rounded-full bg-[hsl(0,0%,50%,0.3)]">
                         <div className="flex size-full items-center justify-center gap-1">
                           <div className="size-2 animate-[ping_1200ms_infinite] rounded-full bg-white"></div>
                           <div className="size-2 animate-[ping_1200ms_100ms_infinite] rounded-full bg-white"></div>
