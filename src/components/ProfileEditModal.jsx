@@ -124,7 +124,7 @@ export default function ProfileEditModal({ func }) {
       }}
       className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/30 px-4 py-8 dark:bg-white/10 [@media(pointer:fine)]:backdrop-blur-[3px]"
     >
-      {isSaving || (isPhotoDeleting && <div onMouseDown={(e) => e.stopPropagation()} className="absolute inset-0 z-[1000]"></div>)}
+      {(isSaving || isPhotoDeleting) && <div onMouseDown={(e) => e.stopPropagation()} className="absolute inset-0 z-[1000]"></div>}
       <div onMouseDown={(e) => e.stopPropagation()} className="relative w-full max-w-[350px] overflow-hidden rounded-2xl bg-zinc-50 p-6 shadow-lg transition-[max-width] duration-200 md:max-w-[400px] dark:bg-zinc-900">
         <button
           onMouseDown={() => {
