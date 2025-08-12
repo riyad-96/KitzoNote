@@ -143,10 +143,6 @@ img {
 
 @keyframes outline-effect {
   0% {
-    outline: 1px solid transparent;
-    outline-offset: 2px;
-  }
-  20% {
     outline: 2px solid hsl(0, 0%, 50%);
     outline-offset: 2px;
   }
