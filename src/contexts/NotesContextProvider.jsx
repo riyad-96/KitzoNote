@@ -1,15 +1,35 @@
-import { createContext, useContext, useState } from 'react';
+import { addDoc, Timestamp } from 'firebase/firestore';
+import { createContext, useContext, useEffect, useState } from 'react';
 const notesContext = createContext();
 
-function NotesContextProvider({children}) {
+function NotesContextProvider({ children }) {
   const [notes, setNotes] = useState([]);
   const [trashes, setTrashes] = useState([]);
 
-  return (
-    <notesContext.Provider value={{notes, setNotes, trashes, setTrashes}}>
-      {children}
-    </notesContext.Provider>
-  )
+  useEffect(() => {
+    console.log(notes);
+  }, [notes]);
+
+  // Add note to database
+  async function addNoteToDatabase({ notesCollectionRef, databaseNote }) {
+    try {
+      const addedNote = await addDoc(notesCollectionRef, databaseNote);
+      const newNoteId = addedNote.id;
+
+      const localNote = {
+        ...databaseNote,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        id: newNoteId,
+      };
+
+      setNotes((prev) => [localNote, ...prev]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  return <notesContext.Provider value={{ notes, setNotes, addNoteToDatabase, trashes, setTrashes }}>{children}</notesContext.Provider>;
 }
 
 export default NotesContextProvider;

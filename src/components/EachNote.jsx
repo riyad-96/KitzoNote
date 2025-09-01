@@ -18,7 +18,14 @@ function EachNote({ state, func }) {
       }}
       animate={{
         opacity: 1,
-        transition: { duration: 0.5 },
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.9,
+      }}
+      transition={{
+        opacity: { duration: 0.4 },
+        scale: { duration: 0.5 },
       }}
       className={`group duration-150ms relative grid grid-rows-[auto_1fr] gap-2 rounded-lg border border-zinc-200 p-4 transition-colors select-none hover:text-zinc-950 dark:border-zinc-800 dark:hover:text-zinc-50 ${isSelected ? 'text-zinc-950 outline-2 outline-zinc-500 dark:text-zinc-50 dark:outline-zinc-400' : 'text-zinc-700 outline-2 outline-transparent dark:text-zinc-300 [@media(pointer:fine)]:hover:outline-zinc-300 dark:[@media(pointer:fine)]:hover:outline-zinc-700'}`}
     >

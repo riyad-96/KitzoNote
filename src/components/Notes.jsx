@@ -11,7 +11,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 function Notes() {
   const { user } = useUser();
-  const { notes, setNotes } = useNotes();
+  const { notes, setNotes, addNoteToDatabase } = useNotes();
   const [noteIsLoading, setNoteIsLoading] = useState(true);
   const { setIsActivityDisabled } = useHelper();
 
@@ -63,8 +63,7 @@ function Notes() {
   const [quickNoteTitle, setQuickNoteTitle] = useState('');
   const [quickNoteBody, setQuickNoteBody] = useState('');
 
-  async function handleAddNoteModal() {
-    setIsInteractivityDisabled(true);
+  function handleAddNoteModal() {
     const notesCollectionRef = collection(db, 'users', user.uid, 'notes');
 
     const databaseNote = {
@@ -73,26 +72,10 @@ function Notes() {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
-
-    try {
-      const addedNote = await addDoc(notesCollectionRef, databaseNote);
-      const newNoteId = addedNote.id;
-
-      const localNote = {
-        id: newNoteId,
-        title: quickNoteTitle.trim(),
-        text: quickNoteBody,
-      };
-
-      setNotes((prev) => [localNote, ...prev]);
-      setQuickNoteTitle('');
-      setQuickNoteBody('');
-      setNoteModalOpen(false);
-      setIsInteractivityDisabled(false);
-    } catch (error) {
-      console.error(error);
-      setIsInteractivityDisabled(false);
-    }
+    addNoteToDatabase({ notesCollectionRef, databaseNote });
+    setQuickNoteTitle('');
+    setQuickNoteBody('');
+    setNoteModalOpen(false);
   }
 
   //! Note selection
@@ -188,13 +171,13 @@ function Notes() {
               >
                 <span>{selectedNotes.length} seleted</span>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setSelectedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                  <button onClick={() => setSelectedNotes([])} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50">
                     <CloseSvg width="20" height="20" />
                   </button>
-                  <button onClick={handleTrash} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                  <button onClick={handleTrash} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50">
                     <TrashSvg width="26" height="26" />
                   </button>
-                  <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                  <button onClick={() => setIsDeleteModalShowing(true)} className="grid size-[30px] cursor-pointer place-items-center rounded-md text-zinc-600 transition-colors hover:bg-zinc-200 hover:text-zinc-800 active:translate-y-[1px] dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 [@media(pointer:coarse)]:text-zinc-800 dark:[@media(pointer:coarse)]:text-zinc-50">
                     <DeleteForeverSvg width="24" height="24" />
                   </button>
                 </div>
@@ -243,9 +226,11 @@ function Notes() {
           </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-3">
-            {notes.map((note) => (
-              <EachNote key={note.id} state={{ note, selectedNotes }} func={{ selectNotes }} />
-            ))}
+            <AnimatePresence>
+              {notes.map((note) => (
+                <EachNote key={note.id} state={{ note, selectedNotes }} func={{ selectNotes }} />
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </div>
@@ -266,7 +251,30 @@ function Notes() {
             }}
             className="fixed inset-0 z-10 flex items-center justify-center bg-black/30 p-4 dark:bg-white/10 [@media(pointer:fine)]:backdrop-blur-[3px]"
           >
-            <div onMouseDown={(e) => e.stopPropagation()} className="w-full max-w-[600px] space-y-4 rounded-xl bg-zinc-100 p-5 shadow-xl dark:bg-zinc-900">
+            <motion.div
+              initial={{
+                y: '120%',
+                scale: 0.8,
+                opacity: 0,
+              }}
+              animate={{
+                y: 0,
+                scale: 1,
+                opacity: 1,
+              }}
+              exit={{
+                y: '120%',
+                scale: 0.8,
+                opacity: 0,
+              }}
+              transition={{
+                y: { duration: 0.3 },
+                scale: { duration: 0.3 },
+                opacity: { duration: 0.2 },
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="w-full max-w-[600px] space-y-4 rounded-xl bg-zinc-100 p-5 shadow-xl dark:bg-zinc-900"
+            >
               <div className="grid rounded-lg border border-zinc-200 transition-colors focus-within:border-zinc-300 dark:border-zinc-800 dark:focus-within:border-zinc-600">
                 <input
                   maxLength="100"
@@ -306,7 +314,7 @@ function Notes() {
                   Save
                 </button>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
