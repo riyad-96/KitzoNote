@@ -66,8 +66,6 @@ function Header({ func }) {
     };
   }, [profileModalCoord]);
 
-  console.log(user);
-
   //! Load profile data
   useEffect(() => {
     if (!user) return;

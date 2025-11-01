@@ -22,7 +22,7 @@ function NotesContextProvider({ children }) {
 
       setNotes((prev) => [localNote, ...prev]);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
