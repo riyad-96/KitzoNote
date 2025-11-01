@@ -66,22 +66,25 @@ function Header({ func }) {
     };
   }, [profileModalCoord]);
 
+  console.log(user);
+
   //! Load profile data
   useEffect(() => {
-    async function getProfileData() {
+    if (!user) return;
+    (async () => {
       const docRef = doc(db, 'users', user.uid, 'profile', 'info');
 
       try {
         const savedInfo = await getDoc(docRef);
-        if (!savedInfo.exists()) {
+        if (savedInfo.exists()) {
+          setProfileData({ ...savedInfo.data() });
+        } else {
           const toSave = {
-            name: 'Guest',
-            imgUrl: '',
+            name: user?.displayName || 'Unknown',
+            imgUrl: user?.photoURL || '',
           };
           await setDoc(docRef, toSave);
           setProfileData(toSave);
-        } else {
-          setProfileData({ ...savedInfo.data() });
         }
 
         setIsProfileLoaded(true);
@@ -89,10 +92,8 @@ function Header({ func }) {
         setIsProfileLoaded(true);
         console.error(error);
       }
-    }
-
-    getProfileData();
-  }, []);
+    })();
+  }, [user]);
 
   //! Profile editing
   const [isProfileEditing, setIsProfileEditing] = useState(false);
